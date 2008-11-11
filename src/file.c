@@ -49,7 +49,7 @@ static loff_t tarfs_file_lseek(
 	} 
 	if (offset != file->f_pos) {
 		file->f_pos = offset;
-		file->f_reada = 0;
+/*		file->f_reada = 0; */
 		file->f_version = ++event;
 	}
 	return offset;

@@ -1,17 +1,20 @@
-# makefile for tarfs
-# Version: $Id: Makefile,v 1.4 2001/02/25 20:25:31 kaz Exp $
+obj-m:= tarfs.o
 
-HEADERS = tarfs.h tarinf.h
-OBJS = file.o inode.o super.o dir.o tarent.o namei.o
+KDIR:= /lib/modules/${shell uname -r}/build
+PWD:= ${shell pwd}
+tarfs-objs:= file.o inode.o super.o dir.o tarent.o namei.o
+HEADERS:= tarfs.h tarinf.h
 
-CFLAGS = -Wall -O2 -D__KERNEL__ -DMODULE
+TARGET:= tarfs.ko
+clean-files:= *.o *.ko *.mod.[co] *~
 
-all:	tarfs.o
+all: ${TARGET}
 
-$(OBJS):  $(HEADERS)
+${tarfs-objs}: ${HEADERS}
+	${MAKE} -C ${KDIR} M=${PWD}
 
-tarfs.o	: $(OBJS) Makefile
-	ld -r -o tarfs.o $(OBJS)
+tarfs.ko: ${tarfs-objs}
+          ${MAKE} -C ${KDIR} M=${PWD} modules
 
 clean:
-	rm $(OBJS) tarfs.o
+	rm -rf ${clean-files}
